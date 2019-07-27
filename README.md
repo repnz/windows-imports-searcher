@@ -2,14 +2,14 @@
 
 ## What is this?
 
-```cmd
->python windows_imports_searcher.py -h
-usage: Windows Imports Searcher [-h] {search,index,merge} ...
-
 A tool to index and search for imports and exports in executables. This tool
 can create index files for indexed directories that contains executables. The
 tool lets you search for imports/exports inside these directories. Index files
 are basically JSON files, so you can open them and search yourself.
+
+```cmd
+>python windows_imports_searcher.py -h
+usage: Windows Imports Searcher [-h] {search,index,merge} ...
 
 positional arguments:
   {search,index,merge}
