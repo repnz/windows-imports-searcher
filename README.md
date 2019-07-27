@@ -2,10 +2,13 @@
 
 ## What is this?
 
-A tool to index and search for imports and exports in executables. This tool
+I needed to find built-in ETW providers so I needed way to search for functions that 
+reference Etw functions, that's why I created this script:)
+
+This is a tool to index and search for imports and exports in executables. This tool
 can create index files for indexed directories that contains executables. The
 tool lets you search for imports/exports inside these directories. Index files
-are basically JSON files, so you can open them and search yourself.
+are basically JSON files, so you can open them and search for yourself.
 
 ```cmd
 >python windows_imports_searcher.py -h
@@ -156,3 +159,25 @@ C:\Windows\SysWOW64\provplatformdesktop.dll Exports DllGetClassObject
 
 The --unique flag specifices that an executable files should only be printed once, even if it meets several conditions.
 
+### Merge
+
+You can use the merge command to merge index files.
+
+Say I've created 2 index files
+
+```
+python windows_imports_searcher.py index -i c:\first -o first.json
+python windows_imports_searcher.py index -i c:\second -o second.json
+```
+
+I can merge them easily using this command:
+
+```
+python windows_imports_searcher.py merge -i first.json second.json -o merged.json
+```
+
+Note that I can index multiple files using the index command:
+
+```
+python windows_imports_searcher.py index -o c:\first c:\second -o merged.json
+```
