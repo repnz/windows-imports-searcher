@@ -2,7 +2,7 @@
 
 ## What is this?
 
-I needed to find built-in ETW providers so I needed way to search for functions that 
+I needed to find built-in ETW providers so I needed some way to search for functions that 
 reference Etw functions, that's why I created this script:)
 
 This is a tool to index and search for imports and exports in executables. This tool
