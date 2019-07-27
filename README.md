@@ -109,7 +109,7 @@ optional arguments:
                         printed only once if it fits one of the conditions.
 ```
 
-Say I want to search for all the executables that references etw functions, I can simply run this command:
+Say I want to search for all the executables that reference etw functions, I can simply run this command:
 
 ```cmd
 > python windows_imports_searcher.py search -i index.json -f Etw* Event* --unique
