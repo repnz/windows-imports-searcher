@@ -75,50 +75,9 @@ modules:
       }, 
       "exports": []
     }, 
-    "write.exe": {
-      "imports": {
-        "SHELL32.dll": [
-          "ShellExecuteW"
-        ], 
-        "KERNEL32.dll": [
-          "TerminateProcess", 
-          "GetCurrentProcess", 
-          "GetStartupInfoW", 
-          "HeapSetInformation", 
-          "SetUnhandledExceptionFilter", 
-          "UnhandledExceptionFilter", 
-          "RtlVirtualUnwind", 
-          "RtlLookupFunctionEntry", 
-          "RtlCaptureContext", 
-          "GetTickCount", 
-          "GetSystemTimeAsFileTime", 
-          "GetCurrentThreadId", 
-          "GetCurrentProcessId", 
-          "QueryPerformanceCounter", 
-          "GetModuleHandleW", 
-          "Sleep"
-        ], 
-        "msvcrt.dll": [
-          "_commode", 
-          "?terminate@@YAXXZ", 
-          "_fmode", 
-          "_wcmdln", 
-          "__C_specific_handler", 
-          "_initterm", 
-          "__setusermatherr", 
-          "_cexit", 
-          "_exit", 
-          "exit", 
-          "__set_app_type", 
-          "__wgetmainargs", 
-          "_amsg_exit", 
-          "_XcptFilter"
-        ]
-      }, 
-      "exports": []
-    }
-    ....
     ....
  ```
  
-<code>python windows_imports_searcher.py -i c:\windows 
+We can index several directories together. The existing index.json was created by the following command:
+
+<code>python windows_imports_searcher.py -i c:\windows c:\windows\system32 c:\windows\syswow64 -o index.json</code>
