@@ -141,7 +141,7 @@ You can also search for multiple function expressions: (2 seconds)
 > python windows_imports_searcher.py search -i index.json -f ntdll.dll!RtlGetVersion ntdll.dll!NtCreateThread*
 ```
 
-Although it's called the "imports_searcher", it can search for exports too! Say I want to search for all of the Com DLLs: (7 seconds)
+Although it's called the "imports_searcher", it can search for exports too! Say I want to search for all of the Com DLLs: (5 seconds)
 
 ```cmd
 > python windows_imports_searcher.py search -i index.json -f DllGetClassObject --unique
