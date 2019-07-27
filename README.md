@@ -137,7 +137,7 @@ You can search in multiple index files by listing them:
 You can also search for multiple function expressions:
 
 ```cmd
-> python windows_imports_searcher.py search -o index.json -f RtlGetVersion NtCreateThread*
+> python windows_imports_searcher.py search -i index.json -f ntdll.dll!RtlGetVersion ntdll.dll!NtCreateThread*
 ```
 
 The --unique flag specifices that an executable files should only be printed once, even if he meets several conditions.
