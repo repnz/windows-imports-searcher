@@ -174,11 +174,15 @@ class SearchCommand(BaseCommand):
 
         parser.add_argument(
             '-f', '--functions', required=True, nargs='+',
-            help='Function expressions to search.' +
-                 'Function expressions are similar to WinDbg.' +
-                 '<dll_name>!<function_name>' +
+            help='Function expressions to search.' 
+                 'Function expressions are similar to WinDbg.' 
+                 '<dll_name>!<function_name>' 
                  'You can use wildcard on both sides'
         )
+
+        parser.add_argument('-u', '--unique', default=False, action='store_true',
+                            help='Flag that specifies if you want an executable'
+                                 'to be printed only once if it fits one of the conditions.')
 
     @classmethod
     def validate_args(cls, args):
@@ -192,18 +196,43 @@ class SearchCommand(BaseCommand):
 
         for term in args.functions:
             for base_dir, files in merged_obj.iteritems():
-                for file_path, file_metadata in files.iteritems():
-                    SearchCommand.search_file_metadata(file_path, file_metadata, term)
+                for file_name, file_metadata in files.iteritems():
+                    file_path = os.path.join(base_dir, file_name)
+                    try:
+                        SearchCommand.search_file_metadata(args.unique, file_path, file_metadata, term)
+                    except CommandError:
+                        raise
+                    except Exception as e:
+                        raise Exception('ERROR PROCESSING: ', file_path, str(e))
 
     @staticmethod
-    def search_file_metadata(file_path, file_metadata, term):
+    def search_file_metadata(unique, file_path, file_metadata, term):
         if '!' in term:
             module, func = term.split('!')
         else:
             module = '*'
             func = term
 
-        for module_name, imported_functions in file_metadata['imports'].iteritems():
+        if func == '*' and module == '*':
+            raise CommandError("Invalid term: *!*")
+
+        if func == '*':
+            SearchCommand.search_modules(unique, file_path, file_metadata, module)
+        else:
+            found = SearchCommand.search_imports(unique, file_path, file_metadata, module, func)
+
+            if found and unique:
+                return
+
+            SearchCommand.search_exports(unique, file_path, file_metadata, module, func)
+
+    @staticmethod
+    def search_imports(unique, file_path, file_metadata, module, func):
+        imports = file_metadata.get('imports', {})
+
+        found = False
+
+        for module_name, imported_functions in imports.iteritems():
             if not fnmatch.fnmatch(module_name, module):
                 continue
 
@@ -211,16 +240,46 @@ class SearchCommand(BaseCommand):
                 if not isinstance(imported_func, unicode):
                     continue
                 if fnmatch.fnmatch(imported_func, func):
+                    found = True
                     print file_path, 'Imports', module_name + '!' + imported_func
 
+                    if unique:
+                        return True
+
+        return found
+
+    @staticmethod
+    def search_exports(unique, file_path, file_metadata, module, func):
         if module != '*':
             return
 
-        for exported_function in file_metadata['exports']:
+        found = False
+        exports = file_metadata.get('exports', [])
+
+        for exported_function in exports:
             if not isinstance(exported_function, unicode):
                 continue
             if fnmatch.fnmatch(exported_function, func):
+                found = True
                 print file_path, 'Exports', exported_function
+
+                if unique:
+                    return True
+        return found
+
+    @staticmethod
+    def search_modules(unique, file_path, file_metadata, module):
+        found = False
+        imports = file_metadata.get('imports', {})
+
+        for module_name in imports.iterkeys():
+            if fnmatch.fnmatch(module_name, module):
+                found = True
+                print file_path, 'Imports Module', module_name
+
+                if unique:
+                    return True
+        return found
 
 
 class MergeCommand(BaseCommand):
