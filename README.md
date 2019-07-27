@@ -86,6 +86,7 @@ We can index several directories together. The existing index.json was created b
 ## Search
 
 The search command allows you to explore the index file and search for executables by imports and exports.
+The search command is pretty fast.
 
 ```cmd
 usage: Windows Imports Searcher search [-h] -i INPUT_INDEXES
@@ -134,10 +135,24 @@ You can search in multiple index files by listing them:
 > python windows_imports_searcher.py search -i win7_index.json win10_index.json -f CreateMutex* --unique
 ```
 
-You can also search for multiple function expressions:
+You can also search for multiple function expressions: (2 seconds)
 
 ```cmd
 > python windows_imports_searcher.py search -i index.json -f ntdll.dll!RtlGetVersion ntdll.dll!NtCreateThread*
 ```
 
-The --unique flag specifices that an executable files should only be printed once, even if he meets several conditions.
+Although it's called the "imports_searcher", it can search for exports too! Say I want to search for all of the Com DLLs: (7 seconds)
+
+```cmd
+> python windows_imports_searcher.py search -i index.json -f DllGetClassObject --unique
+Reading file index.json
+C:\Windows\SysWOW64\ActionCenterCPL.dll Exports DllGetClassObject
+C:\Windows\SysWOW64\wmdmlog.dll Exports DllGetClassObject
+C:\Windows\SysWOW64\AppVClientPS.dll Exports DllGetClassObject
+C:\Windows\SysWOW64\VoiceActivationManager.dll Exports DllGetClassObject
+C:\Windows\SysWOW64\Windows.Management.Workplace.WorkplaceSettings.dll Exports DllGetClassObject
+C:\Windows\SysWOW64\provplatformdesktop.dll Exports DllGetClassObject
+```
+
+The --unique flag specifices that an executable files should only be printed once, even if it meets several conditions.
+
