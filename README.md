@@ -3,7 +3,7 @@
 ## What is this?
 
 ```cmd
-C:\repnz\code\windows-imports-searcher>python windows_imports_searcher.py -h
+>python windows_imports_searcher.py -h
 usage: Windows Imports Searcher [-h] {search,index,merge} ...
 
 A tool to index and search for imports and exports in executables. This tool
@@ -44,7 +44,7 @@ optional arguments:
 Examples:
 
 ```cmd
-C:\repnz\code\windows-imports-searcher>python windows_imports_searcher.py index -i c:\windows -o c_windows_index.json
+>python windows_imports_searcher.py index -i c:\windows -o c_windows_index.json
 Indexing c:\windows\bfsvc.exe
 Indexing c:\windows\explorer.exe
 Indexing c:\windows\HelpPane.exe
