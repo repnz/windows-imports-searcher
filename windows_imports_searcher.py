@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pefile
 import os
 import json
@@ -45,8 +46,7 @@ def main():
                 command.validate_args(args)
                 command.run(args)
             except CommandError as e:
-                print str(e)
-
+                print(str(e))
             break
 
 
@@ -104,11 +104,11 @@ class IndexCommand(BaseCommand):
         executable_metadata = {}
 
         for file_name in os.listdir(directory):
-            if not (file_name.endswith('.exe') or file_name.endswith('.dll')):
+            if not (file_name.endswith('.exe') or file_name.endswith('.dll') or file_name.endswith('.sys') or file_name.endswith('.ocx')):
                 continue
 
             file_path = os.path.join(directory, file_name)
-            print "Indexing", file_path
+            print("Indexing", file_path)
 
             # noinspection PyBroadException
             try:
@@ -141,9 +141,9 @@ class IndexCommand(BaseCommand):
                 if imp.name is None:
                     imported_functions.append(imp.ordinal)
                 else:
-                    imported_functions.append(imp.name)
+                    imported_functions.append(imp.name.decode('ascii'))
 
-            imports[entry.dll] = imported_functions
+            imports[entry.dll.decode('ascii')] = imported_functions
 
         return imports
 
@@ -158,7 +158,7 @@ class IndexCommand(BaseCommand):
             if not exp.name:
                 exports.append(exp.ordinal)
             else:
-                exports.append(exp.name)
+                exports.append(exp.name.decode('ascii'))
 
         return exports
 
@@ -241,7 +241,7 @@ class SearchCommand(BaseCommand):
                     continue
                 if fnmatch.fnmatch(imported_func, func):
                     found = True
-                    print file_path, 'Imports', module_name + '!' + imported_func
+                    print(file_path, 'Imports', module_name + '!' + imported_func)
 
                     if unique:
                         return True
@@ -261,7 +261,7 @@ class SearchCommand(BaseCommand):
                 continue
             if fnmatch.fnmatch(exported_function, func):
                 found = True
-                print file_path, 'Exports', exported_function
+                print(file_path, 'Exports', exported_function)
 
                 if unique:
                     return True
@@ -275,7 +275,7 @@ class SearchCommand(BaseCommand):
         for module_name in imports.iterkeys():
             if fnmatch.fnmatch(module_name, module):
                 found = True
-                print file_path, 'Imports Module', module_name
+                print(file_path, 'Imports Module', module_name)
 
                 if unique:
                     return True
@@ -317,7 +317,7 @@ class MergeCommand(BaseCommand):
         merged_obj = {}
 
         for input_index in files:
-            print 'Reading file', input_index
+            print('Reading file', input_index)
             obj = load_json(input_index)
             merged_obj.update(obj)
 
@@ -337,6 +337,6 @@ def write_json(file_path, obj):
     with open(file_path, 'w') as f:
         json.dump(obj, f, indent=2)
 
-
 if __name__ == '__main__':
     main()
+
